@@ -1,5 +1,6 @@
 package com.example.projekt.klientutveckling.firechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -70,6 +71,10 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
                     Log.d(TAG, "signInWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
+                    /** Skickar vidare till nästa activity
+                    Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+                    startActivity(intent);
+                    */
                 } else
                 {
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -193,6 +198,10 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
                 {
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
+                    /**skickar vidare till nästa activity
+                    Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+                    startActivity(intent);
+                     */
                 } else
                 {
                     // If sign in fails, display a message to the user.
