@@ -71,6 +71,11 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
                     Log.d(TAG, "signInWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
+
+                    Intent intent = new Intent(LoginActivity.this, CreateAccount.class);
+                    startActivity(intent);
+
+
                     /** Skickar vidare till nästa activity
                     Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
                     startActivity(intent);
