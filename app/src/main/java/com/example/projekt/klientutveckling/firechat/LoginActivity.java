@@ -44,6 +44,15 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentuser = mAuth.getCurrentUser();
+
+        if(currentuser != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
