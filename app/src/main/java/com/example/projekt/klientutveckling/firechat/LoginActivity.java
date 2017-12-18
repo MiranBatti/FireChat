@@ -56,6 +56,7 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
 
     private void createAccount(String email, String password)
     {
+
         Log.d(TAG, "createAccount: " + email);
         if(!validateForm())
             return;
@@ -203,10 +204,12 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
                 {
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
-                    /**skickar vidare till nästa activity
-                    Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+
+                    // Gör en if sats som kollar om du har en användare om gå till lobby om inte gå till creat user
+
+                    Intent intent = new Intent(LoginActivity.this, LobbyActivit.class);
                     startActivity(intent);
-                     */
+
                 } else
                 {
                     // If sign in fails, display a message to the user.

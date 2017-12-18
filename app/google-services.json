@@ -15,6 +15,46 @@
       },
       "oauth_client": [
         {
+          "client_id": "206944051255-tjq1853kku3luoaal0s6n2qqdbigt6id.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projekt.klientutveckling.firechat",
+            "certificate_hash": "f0b31aa59a8722cc77cf2c42da0e438f8ca86b90"
+          }
+        },
+        {
+          "client_id": "206944051255-nkne44oalsav8brbccaqcss4slo3s46h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projekt.klientutveckling.firechat",
+            "certificate_hash": "d5767ac3cf6042a11032a6221e2231e021b7ed49"
+          }
+        },
+        {
+          "client_id": "206944051255-8rqqllodfr872ahl4ei53gd5as78nnts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projekt.klientutveckling.firechat",
+            "certificate_hash": "79929da438ac2bc26630299670e1bef0e221e2a4"
+          }
+        },
+        {
+          "client_id": "206944051255-pd6cm4viq786u1k2p95q7t7bpahmqroo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projekt.klientutveckling.firechat",
+            "certificate_hash": "369cf3a68453db258fb34a35663412f02eb1fe81"
+          }
+        },
+        {
+          "client_id": "206944051255-jf7qcdc8muoov97uqc9j137c4le9u1ou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.projekt.klientutveckling.firechat",
+            "certificate_hash": "37930a6f3521c351768dad005962fda15b132c04"
+          }
+        },
+        {
           "client_id": "206944051255-m1f6s4va2dbmfjimubb0n64rklbk3as1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -22,6 +22,11 @@
         <activity android:name=".CreateAccount">
 
         </activity>
+        <activity android:name=".LobbyActivit">
+
+        </activity>
+
+
     </application>
 
 </manifest>
