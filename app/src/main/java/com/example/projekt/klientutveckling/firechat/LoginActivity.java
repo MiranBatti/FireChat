@@ -15,10 +15,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends ProgressActivity implements View.OnClickListener
 {
     private final static String TAG = "LoginActivity";
+
+    private UserData userData = UserData.getUserData();
 
     private TextView mStatusTextView;
     private TextView mDetailTextView;
@@ -43,6 +47,7 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
+
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -56,10 +61,19 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
 
     private void createAccount(String email, String password)
     {
+
+
+        userData.setEmail(email);
+
+        Intent intent = new Intent(LoginActivity.this, CreateAccount.class);
+        startActivity(intent);
+
         Log.d(TAG, "createAccount: " + email);
         if(!validateForm())
             return;
         showProgressDialog();
+
+
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
         {
