@@ -15,14 +15,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends ProgressActivity implements View.OnClickListener
 {
     private final static String TAG = "LoginActivity";
-
-    private UserData userData = UserData.getUserData();
 
     private TextView mStatusTextView;
     private TextView mDetailTextView;
@@ -47,8 +43,16 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
-
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentuser = mAuth.getCurrentUser();
+
+        if(currentuser != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
@@ -62,18 +66,10 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
     private void createAccount(String email, String password)
     {
 
-
-        userData.setEmail(email);
-
-        Intent intent = new Intent(LoginActivity.this, CreateAccount.class);
-        startActivity(intent);
-
         Log.d(TAG, "createAccount: " + email);
         if(!validateForm())
             return;
         showProgressDialog();
-
-
 
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
         {
@@ -217,10 +213,12 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
                 {
                     FirebaseUser user = mAuth.getCurrentUser();
                     updateUI(user);
-                    /**skickar vidare till nästa activity
-                    Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+
+                    // Gör en if sats som kollar om du har en användare om gå till lobby om inte gå till creat user
+
+                    Intent intent = new Intent(LoginActivity.this, LobbyActivit.class);
                     startActivity(intent);
-                     */
+
                 } else
                 {
                     // If sign in fails, display a message to the user.

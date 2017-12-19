@@ -16,12 +16,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatActivity">
-
+        <activity android:name=".ChatActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
+            android:screenOrientation="portrait"
+            >
         </activity>
         <activity android:name=".CreateAccount">
 
         </activity>
+        <activity android:name=".LobbyActivit">
+
+        </activity>
+
+
     </application>
 
 </manifest>

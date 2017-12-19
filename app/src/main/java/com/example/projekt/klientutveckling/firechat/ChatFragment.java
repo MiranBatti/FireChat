@@ -2,9 +2,21 @@ package com.example.projekt.klientutveckling.firechat;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ServerValue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ofk14mbi on 2017-12-15.
@@ -12,11 +24,74 @@ import android.view.ViewGroup;
 
 public class ChatFragment extends Fragment
 {
+    private FirebaseAuth mAuth;
+    private String currentUserID;
+    private EditText mChatMessageView;
+    private String mChatUser;
+    private DatabaseReference dbRef;
+    private ImageButton sendBtn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+        mChatUser = getActivity().getIntent().getStringExtra("user_id");
+        sendBtn = (ImageButton) getActivity().findViewById(R.id.chat_send_btn);
+
         return rootView;
+    }
+
+    private void sendMessage()
+    {
+        String message = mChatMessageView.getText().toString();
+
+        if(!TextUtils.isEmpty(message)){
+
+            String current_user_ref = "messages/" + currentUserID + "/" + mChatUser;
+            String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
+
+            DatabaseReference user_message_push = dbRef.child("messages")
+                    .child(currentUserID).child(mChatUser).push();
+
+            String push_id = user_message_push.getKey();
+
+            Map messageMap = new HashMap();
+            messageMap.put("message", message);
+            messageMap.put("seen", false);
+            messageMap.put("type", "text");
+            messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from", currentUserID);
+
+            Map messageUserMap = new HashMap();
+            messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+            messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+
+            mChatMessageView.setText("");
+
+            dbRef.child("Chat").child(currentUserID).child(mChatUser).child("seen").setValue(true);
+            dbRef.child("Chat").child(currentUserID).child(mChatUser).child("timestamp").setValue(ServerValue.TIMESTAMP);
+
+            dbRef.child("Chat").child(mChatUser).child(currentUserID).child("seen").setValue(false);
+            dbRef.child("Chat").child(mChatUser).child(currentUserID).child("timestamp").setValue(ServerValue.TIMESTAMP);
+
+            dbRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                    if(databaseError != null){
+
+                        Log.d("CHAT_LOG", databaseError.getMessage().toString());
+
+                    }
+
+                }
+            });
+
+        }
+
     }
 }
