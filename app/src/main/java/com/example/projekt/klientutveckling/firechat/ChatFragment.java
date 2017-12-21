@@ -2,6 +2,7 @@ package com.example.projekt.klientutveckling.firechat;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
@@ -29,18 +31,28 @@ public class ChatFragment extends Fragment
     private EditText mChatMessageView;
     private String mChatUser;
     private DatabaseReference dbRef;
-    private ImageButton sendBtn;
+    private ImageButton mSendBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
+
         mAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance().getReference();
         currentUserID = mAuth.getCurrentUser().getUid();
 
         mChatUser = getActivity().getIntent().getStringExtra("user_id");
-        sendBtn = (ImageButton) getActivity().findViewById(R.id.chat_send_btn);
+        mSendBtn = (ImageButton) rootView.findViewById(R.id.chat_send_btn);
+        mChatMessageView = (EditText) rootView.findViewById(R.id.chat_message_view);
+
+        mSendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage();
+            }
+        });
 
         return rootView;
     }
@@ -54,8 +66,8 @@ public class ChatFragment extends Fragment
             String current_user_ref = "messages/" + currentUserID + "/" + mChatUser;
             String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
 
-            DatabaseReference user_message_push = dbRef.child("messages")
-                    .child(currentUserID).child(mChatUser).push();
+            DatabaseReference user_message_push = dbRef.child("Rooms")
+                    .child("Room1").push(); //TODO: Room1 bör ersättas med en variabel med nuvarande rum.
 
             String push_id = user_message_push.getKey();
 

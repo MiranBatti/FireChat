@@ -13,6 +13,7 @@
         android:background="@android:color/white"
         android:ems="10"
         android:hint="Send a message"
+        android:textColor="@color/black"
         android:inputType="textPersonName"
         android:paddingBottom="12dp"
         android:paddingLeft="10dp"
@@ -29,6 +30,8 @@
         android:background="@android:color/white"
         android:cropToPadding="false"
         android:padding="13.5dp"
+        android:focusable="true"
+        android:clickable="true"
         android:src="@drawable/send_arrow" />
 
 </LinearLayout>
