@@ -74,7 +74,6 @@ public class ChatFragment extends Fragment
             Map messageMap = new HashMap();
             messageMap.put("message", message);
             messageMap.put("seen", false);
-            messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", currentUserID);
 
@@ -84,11 +83,8 @@ public class ChatFragment extends Fragment
 
             mChatMessageView.setText("");
 
-            dbRef.child("Chat").child(currentUserID).child(mChatUser).child("seen").setValue(true);
-            dbRef.child("Chat").child(currentUserID).child(mChatUser).child("timestamp").setValue(ServerValue.TIMESTAMP);
-
-            dbRef.child("Chat").child(mChatUser).child(currentUserID).child("seen").setValue(false);
-            dbRef.child("Chat").child(mChatUser).child(currentUserID).child("timestamp").setValue(ServerValue.TIMESTAMP);
+            dbRef.child("Rooms").child("Room1").child("timestamp").setValue(ServerValue.TIMESTAMP);
+            dbRef.child("Rooms").child("Room1").child("message").setValue(message);
 
             dbRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
