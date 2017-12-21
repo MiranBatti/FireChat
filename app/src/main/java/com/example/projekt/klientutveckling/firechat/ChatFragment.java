@@ -2,6 +2,7 @@ package com.example.projekt.klientutveckling.firechat;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,6 +33,8 @@ public class ChatFragment extends Fragment
     private String mChatUser;
     private DatabaseReference dbRef;
     private ImageButton mSendBtn;
+    private MessageAdapter mMessageAdapter;
+    private RecyclerView mMessageList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
