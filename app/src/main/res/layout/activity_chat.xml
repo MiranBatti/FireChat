@@ -13,16 +13,43 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/conv_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"/>
-
-    <fragment
-        android:id="@+id/fragment_chat"
-        class="com.example.projekt.klientutveckling.firechat.ChatFragment"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/fragment_chat" />
+        android:layout_below="@id/toolbar"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+        <EditText
+            android:id="@+id/chat_message_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:hint="Send a message"
+            android:inputType="textPersonName"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="14dp"
+            android:textColor="@color/black" />
+
+        <ImageButton
+            android:id="@+id/chat_send_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="false"
+            android:alpha="0.5"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:cropToPadding="false"
+            android:focusable="true"
+            android:padding="13.5dp"
+            android:src="@drawable/send_arrow" />
+    </LinearLayout>
 
 </RelativeLayout>

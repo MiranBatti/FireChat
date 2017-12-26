@@ -16,6 +16,8 @@ public class Message
         this.time = time;
     }
 
+    public Message(){}
+
     public String getMessage() {
         return message;
     }
