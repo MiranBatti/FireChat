@@ -1,6 +1,5 @@
 package com.example.projekt.klientutveckling.firechat;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -60,7 +59,7 @@ public class ChatActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Room Name");
 
-        roomName = "NewRoom"; //TODO: room name should be passed from lobby. hard coded, for now
+        roomName = "Room1"; //TODO: room name should be passed from lobby. hard coded, for now
 
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference();
@@ -78,7 +77,7 @@ public class ChatActivity extends AppCompatActivity
         mMessageList.setLayoutManager(mLinearLayoutManager);
         mMessageList.setAdapter(mMessageAdapter);
 
-        loadMessages();
+        retrieveMessages();
 
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,14 +109,14 @@ public class ChatActivity extends AppCompatActivity
 
         if(!TextUtils.isEmpty(message)){
 
-            String current_user_ref = "messages/" + currentUserID + "/" + mChatUser;
-            String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
+            final String current_user_ref = "messages/" + currentUserID + "/" + mChatUser;
+            final String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
 
-            String current_user = "messages/" + currentUserID;
+            final String current_user = "NewRooms/" + "NewRoom/" + currentUserID;
+            final String current_room = "Rooms/" + roomName + "/";
 
 
-            DatabaseReference user_message_push = dbRef.child("Rooms")
-                    .child("Room1").push(); //TODO: Room1 bör ersättas med en variabel med nuvarande rum.
+            DatabaseReference user_message_push = dbRef.child("NewRooms").child(roomName).push();
 
             String push_id = user_message_push.getKey();
 
@@ -128,15 +127,7 @@ public class ChatActivity extends AppCompatActivity
             messageMap.put("from", currentUserID);
 
             Map messageUserMap = new HashMap();
-            //messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
-            //messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
-            messageUserMap.put(current_user + push_id, messageMap);
-
-            Map roomMap = new HashMap();
-            roomMap.put(roomName, messageUserMap);
-
-            Map mainRoomsMap = new HashMap();
-            mainRoomsMap.put("NewRooms", roomMap);
+            messageUserMap.put(current_room + push_id, messageMap);
 
             mChatMessageView.setText("");
 
@@ -145,7 +136,7 @@ public class ChatActivity extends AppCompatActivity
             dbRef.child("Rooms").child("Room1").child("message").setValue(message);
             */
 
-            dbRef.updateChildren(mainRoomsMap, new DatabaseReference.CompletionListener() {
+            dbRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
@@ -162,9 +153,9 @@ public class ChatActivity extends AppCompatActivity
 
     }
 
-    private void loadMessages()
+    private void retrieveMessages()
     {
-        dbRef.child("Rooms").addChildEventListener(new ChildEventListener()
+        dbRef.child("Rooms").child(roomName).addChildEventListener(new ChildEventListener()
         {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s)

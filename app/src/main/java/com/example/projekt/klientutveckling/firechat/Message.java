@@ -8,9 +8,9 @@ public class Message
 {
     private String message;
 
-    private String time;
+    private long time;
 
-    public Message(String message, String time)
+    public Message(String message, long time)
     {
         this.message = message;
         this.time = time;
@@ -26,11 +26,11 @@ public class Message
         this.message = message;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 }
