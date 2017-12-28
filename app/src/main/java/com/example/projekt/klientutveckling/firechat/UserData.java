@@ -9,6 +9,7 @@ public class UserData {
     private String username;
     private static UserData userData = new UserData();
     private String rooms;
+
     private UserData(){
 
     }

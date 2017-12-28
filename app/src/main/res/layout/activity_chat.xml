@@ -10,32 +10,31 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
+    <EditText
+        android:id="@+id/chat_message_view"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:background="@android:color/white"
+        android:ems="10"
+        android:hint="Send a message"
+        android:inputType="textPersonName"
+        android:paddingBottom="12dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="14dp"
+        android:drawableRight="@drawable/send_arrow"
+        android:textColor="@color/black" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/conv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/chat_message_view"
         android:layout_below="@id/toolbar" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom">
-
-        <EditText
-            android:id="@+id/chat_message_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:background="@android:color/white"
-            android:ems="10"
-            android:hint="Send a message"
-            android:inputType="textPersonName"
-            android:paddingBottom="12dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="14dp"
-            android:textColor="@color/black" />
-
+        <!--
         <ImageButton
             android:id="@+id/chat_send_btn"
             android:layout_width="wrap_content"
@@ -49,6 +48,6 @@
             android:focusable="true"
             android:padding="13.5dp"
             android:src="@drawable/send_arrow" />
-    </LinearLayout>
+            -->
 
 </RelativeLayout>

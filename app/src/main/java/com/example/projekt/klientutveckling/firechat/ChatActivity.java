@@ -1,5 +1,6 @@
 package com.example.projekt.klientutveckling.firechat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +69,7 @@ public class ChatActivity extends AppCompatActivity
         currentUserID = mAuth.getCurrentUser().getUid();
 
         mChatUser = getIntent().getStringExtra("user_id"); //todo: is null because there's no putExtra() anywhere
-        mSendBtn = (ImageButton) findViewById(R.id.chat_send_btn);
+        //mSendBtn = (ImageButton) findViewById(R.id.chat_send_btn);
         mChatMessageView = (EditText) findViewById(R.id.chat_message_view);
         mMessageList = (RecyclerView) findViewById(R.id.conv_list);
 
@@ -79,13 +82,30 @@ public class ChatActivity extends AppCompatActivity
 
         retrieveMessages();
 
+        mChatMessageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (mChatMessageView.getRight() - mChatMessageView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        sendMessage();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        /*
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendMessage();
             }
         });
-
+        */
     }
 
     @Override
@@ -105,7 +125,7 @@ public class ChatActivity extends AppCompatActivity
 
     private void sendMessage()
     {
-        String message = mChatMessageView.getText().toString();
+        final String message = mChatMessageView.getText().toString();
 
         if(!TextUtils.isEmpty(message)){
 
@@ -130,6 +150,9 @@ public class ChatActivity extends AppCompatActivity
             messageUserMap.put(current_room + push_id, messageMap);
 
             mChatMessageView.setText("");
+
+            dbRef.child("latest").child(roomName).child("message").setValue(message);
+            dbRef.child("latest").child(roomName).child("time").setValue(ServerValue.TIMESTAMP);
 
             /*
             dbRef.child("Rooms").child("Room1").child("timestamp").setValue(ServerValue.TIMESTAMP);

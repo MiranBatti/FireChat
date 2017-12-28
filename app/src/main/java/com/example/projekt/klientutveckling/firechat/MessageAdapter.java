@@ -34,7 +34,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(final MessageViewHolder viewHolder, int i)
     {
         Message messages = messagesList.get(i);
-        viewHolder.messageView.setText(messages.getMessage());
+
 
         mAuth = FirebaseAuth.getInstance();
         String currentUser = mAuth.getCurrentUser().getUid();
@@ -42,20 +42,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         String messageSender = messages.getFrom();
         if(messageSender.equals(currentUser)) //if we sent the message
         {
-            RelativeLayout.LayoutParams params = new RelativeLayout. LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            params.setMargins(0,12,0,0);
-            params.setMarginEnd(12);
-            viewHolder.messageView.setLayoutParams(params);
-
-            viewHolder.messageView.setBackgroundResource(R.drawable.white_bubble);
-            viewHolder.messageView.setTextColor(Color.BLACK);
-            viewHolder.messageView.setGravity(Gravity.RIGHT);
+            viewHolder.messageViewFrom.setText(messages.getMessage());
+            viewHolder.messageView.setVisibility(View.GONE);
+            viewHolder.messageViewFrom.setVisibility(View.VISIBLE);
             viewHolder.profileImageView.setVisibility(View.GONE);
         } else //if someone else sent the message
         {
-            viewHolder.messageView.setBackgroundResource(R.drawable.purple_bubble);
-            viewHolder.messageView.setTextColor(Color.WHITE);
+            viewHolder.messageView.setText(messages.getMessage());
+            viewHolder.messageView.setVisibility(View.VISIBLE);
+            viewHolder.messageViewFrom.setVisibility(View.GONE);
+            viewHolder.profileImageView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -77,6 +73,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     class MessageViewHolder extends RecyclerView.ViewHolder
     {
         public TextView messageView;
+        public TextView messageViewFrom;
         public CircleImageView profileImageView;
 
         public MessageViewHolder(View itemView)
@@ -84,6 +81,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             super(itemView);
 
             messageView = (TextView) itemView.findViewById(R.id.chatTextView);
+            messageViewFrom = (TextView) itemView.findViewById(R.id.chatTextFromView);
             profileImageView = (CircleImageView) itemView.findViewById(R.id.profileImageView);
         }
     }
