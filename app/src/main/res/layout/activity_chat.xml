@@ -12,19 +12,22 @@
 
     <EditText
         android:id="@+id/chat_message_view"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="10"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/imageButton"
+        android:layout_weight="8"
         android:background="@android:color/white"
+        android:drawablePadding="20dp"
+        android:drawableRight="@drawable/send_arrow_layer"
         android:ems="10"
         android:hint="Send a message"
         android:inputType="textPersonName"
-        android:paddingBottom="12dp"
+        android:paddingBottom="8dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="14dp"
-        android:drawableRight="@drawable/send_arrow"
+        android:paddingTop="8dp"
         android:textColor="@color/black" />
 
     <android.support.v7.widget.RecyclerView
@@ -32,22 +35,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/chat_message_view"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/toolbar"
+        app:stackFromEnd="true"
+        app:reverseLayout="true"
+        />
 
-        <!--
-        <ImageButton
-            android:id="@+id/chat_send_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:adjustViewBounds="false"
-            android:alpha="0.5"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:cropToPadding="false"
-            android:focusable="true"
-            android:padding="13.5dp"
-            android:src="@drawable/send_arrow" />
-            -->
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/conv_list"
+        android:alpha="0.5"
+        android:background="@color/grey_100"
+        android:paddingBottom="3dp"
+        android:paddingEnd="3dp"
+        android:paddingStart="3dp"
+        app:srcCompat="@drawable/camera_button_layer" />
+
+    <!--
+    <ImageButton
+        android:id="@+id/chat_send_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:alpha="0.5"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:cropToPadding="false"
+        android:focusable="true"
+        android:padding="13.5dp"
+        android:src="@drawable/send_arrow" />
+        -->
 
 </RelativeLayout>
