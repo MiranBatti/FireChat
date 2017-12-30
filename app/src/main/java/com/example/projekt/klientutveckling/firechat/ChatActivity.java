@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -81,6 +82,8 @@ public class ChatActivity extends AppCompatActivity
         mMessageList.setAdapter(mMessageAdapter);
 
         retrieveMessages();
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); //pushar up layouten så att keyboard inte blockerar meddelanden
 
         mChatMessageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -186,6 +189,7 @@ public class ChatActivity extends AppCompatActivity
                 Message message = dataSnapshot.getValue(Message.class);
                 messageList.add(message);
                 mMessageAdapter.notifyDataSetChanged();
+                mMessageList.scrollToPosition(mMessageAdapter.getItemCount()-1);
             }
 
             @Override
