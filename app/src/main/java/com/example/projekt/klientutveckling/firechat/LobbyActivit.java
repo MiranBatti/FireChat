@@ -1,5 +1,6 @@
 package com.example.projekt.klientutveckling.firechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,8 +41,9 @@ public class LobbyActivit extends AppCompatActivity{
     private ImageButton mImageButton;
 
 
-    private addRoomToUser addRoomToUser = new addRoomToUser();
+
     private int roomNumber;
+
     private ArrayList<String> roomArray = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState)
@@ -99,7 +101,8 @@ public class LobbyActivit extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                addRoomToUser.addRoom(userID);
+                Intent intent = new Intent(LobbyActivit.this, CreatChatActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -117,8 +120,8 @@ public class LobbyActivit extends AppCompatActivity{
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds: dataSnapshot.getChildren()){
 
-            if (dataSnapshot.child("room" + roomNumber).getValue()!=null) {
-                String room = dataSnapshot.child("room" + roomNumber).getValue(String.class);
+
+                String room = ds.getKey().toString();
                 roomNumber++;
 
 
@@ -127,7 +130,8 @@ public class LobbyActivit extends AppCompatActivity{
                 ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.lobby_list_items, roomArray);
                 mListView.setAdapter(adapter);
 
-            }
+
+
         }
 
 

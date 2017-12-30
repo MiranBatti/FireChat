@@ -27,6 +27,9 @@
         <activity android:name=".LobbyActivit">
 
         </activity>
+        <activity android:name=".CreatChatActivity">
+
+        </activity>
 
 
     </application>
