@@ -10,7 +10,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,10 +28,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private List<Message> messagesList;
     private DatabaseReference dbRef;
     private FirebaseAuth mAuth;
+    private String previousSender;
 
     public MessageAdapter(List<Message> messageList)
     {
         this.messagesList = messageList;
+        dbRef = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        previousSender = "";
     }
 
     @Override
@@ -35,25 +43,42 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     {
         Message messages = messagesList.get(i);
 
-
-        mAuth = FirebaseAuth.getInstance();
         String currentUser = mAuth.getCurrentUser().getUid();
-
         String messageSender = messages.getFrom();
+
         if(messageSender.equals(currentUser)) //if we sent the message
         {
             viewHolder.messageViewFrom.setText(messages.getMessage());
             viewHolder.messageView.setVisibility(View.GONE);
             viewHolder.messageViewFrom.setVisibility(View.VISIBLE);
+            viewHolder.messageView.setBottom(12);
             viewHolder.profileImageView.setVisibility(View.GONE);
+            viewHolder.userInfo.setVisibility(View.GONE);
         } else //if someone else sent the message
         {
             viewHolder.messageView.setText(messages.getMessage());
             viewHolder.messageView.setVisibility(View.VISIBLE);
             viewHolder.messageViewFrom.setVisibility(View.GONE);
+            viewHolder.messageView.setBottom(4);
             viewHolder.profileImageView.setVisibility(View.VISIBLE);
-        }
 
+            if(!messageSender.equals(previousSender) && !previousSender.equals("")) {
+                viewHolder.userInfo.setVisibility(View.VISIBLE);
+                dbRef.child("users").child(messageSender).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String messageSenderDisplayname = dataSnapshot.getValue(String.class);
+                        viewHolder.userInfo.setText(messageSenderDisplayname);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+        previousSender = messageSender;
     }
 
     @Override
@@ -75,6 +100,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public TextView messageView;
         public TextView messageViewFrom;
         public CircleImageView profileImageView;
+        public TextView userInfo;
 
         public MessageViewHolder(View itemView)
         {
@@ -83,6 +109,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageView = (TextView) itemView.findViewById(R.id.chatTextView);
             messageViewFrom = (TextView) itemView.findViewById(R.id.chatTextFromView);
             profileImageView = (CircleImageView) itemView.findViewById(R.id.profileImageView);
+            userInfo = (TextView) itemView.findViewById(R.id.userInfoBar);
         }
     }
 }

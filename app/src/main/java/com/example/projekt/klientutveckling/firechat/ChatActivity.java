@@ -9,12 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -48,6 +51,7 @@ public class ChatActivity extends AppCompatActivity
     private final List<Message> messageList = new ArrayList<>();
     private LinearLayoutManager mLinearLayoutManager;
     private MessageAdapter mMessageAdapter;
+    private ImageButton addButton;
 
     private String roomName;
 
@@ -58,6 +62,8 @@ public class ChatActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        addButton = (ImageButton) findViewById(R.id.addButton);
+        registerForContextMenu(addButton);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -101,14 +107,13 @@ public class ChatActivity extends AppCompatActivity
             }
         });
 
-        /*
-        mSendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMessage();
-            }
-        });
-        */
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_menu_items, menu);
     }
 
     @Override
@@ -136,10 +141,10 @@ public class ChatActivity extends AppCompatActivity
             final String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
 
             final String current_user = "NewRooms/" + "NewRoom/" + currentUserID;
-            final String current_room = "Rooms/" + roomName + "/";
+            final String current_room = "messages/" + roomName + "/";
 
 
-            DatabaseReference user_message_push = dbRef.child("NewRooms").child(roomName).push();
+            DatabaseReference user_message_push = dbRef.child("messages").child(roomName).push();
 
             String push_id = user_message_push.getKey();
 
@@ -169,7 +174,6 @@ public class ChatActivity extends AppCompatActivity
                     if(databaseError != null){
 
                         Log.d("CHAT_LOG", databaseError.getMessage().toString());
-
                     }
 
                 }
@@ -181,7 +185,7 @@ public class ChatActivity extends AppCompatActivity
 
     private void retrieveMessages()
     {
-        dbRef.child("Rooms").child(roomName).addChildEventListener(new ChildEventListener()
+        dbRef.child("messages").child(roomName).addChildEventListener(new ChildEventListener()
         {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s)

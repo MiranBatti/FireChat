@@ -7,5 +7,16 @@
     android:minHeight="?attr/actionBarSize"
     android:background="@color/colorPrimary"
     local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    local:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    local:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+    <ImageButton
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="end"
+        android:background="@color/colorPrimary"
+        android:clickable="true"
+        local:srcCompat="@android:drawable/ic_menu_add" />
+</android.support.v7.widget.Toolbar>
 

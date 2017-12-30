@@ -19,8 +19,8 @@
         android:id="@+id/chatTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="12dp"
+        android:layout_centerVertical="false"
+        android:layout_marginBottom="4dp"
         android:layout_marginEnd="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
@@ -47,4 +47,14 @@
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/userInfoBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/chatTextView"
+        android:layout_below="@+id/chatTextView"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/black"
+        android:visibility="gone" />
 </RelativeLayout>

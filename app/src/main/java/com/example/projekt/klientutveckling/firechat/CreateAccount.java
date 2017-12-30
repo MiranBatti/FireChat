@@ -29,15 +29,12 @@ import java.util.Map;
 public class CreateAccount extends ProgressActivity {
 
     private UserData userData = UserData.getUserData();
-
     private TextView userNameTextView;
     private EditText userNameTextField;
     private Button createDisplayname;
-
     private DatabaseReference mDatabase;
     private String currentUserId;
     private FirebaseAuth mAuth;
-
     private final List<User> userList = new ArrayList<User>();
 
     @Override
@@ -61,12 +58,42 @@ public class CreateAccount extends ProgressActivity {
             {
                 writeToDatabase();
             }
-
-
-
         });
 
+        retrieveUserInfo();
+    }
 
+    private void retrieveUserInfo()
+    {
+        mDatabase.child("users").addChildEventListener(new ChildEventListener()
+        {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s)
+            {
+                Map<String, User> map = (Map<String, User>) dataSnapshot.getValue();
+                userList.add(map.get("username"));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s)
+            {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void writeToDatabase()
@@ -77,10 +104,10 @@ public class CreateAccount extends ProgressActivity {
         {
             final String current_user = "users/" + currentUserId + "/";
 
-
             Map userInfoMap = new HashMap();
             userInfoMap.put("username", username);
             userInfoMap.put("email", mAuth.getCurrentUser().getEmail());
+
             Map userMap = new HashMap();
             userMap.put(current_user, userInfoMap);
 
