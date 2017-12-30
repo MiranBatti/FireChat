@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class LobbyActivit extends AppCompatActivity{
     private TextView mTextView;
     private ImageButton mImageButton;
 
+
     private addRoomToUser addRoomToUser = new addRoomToUser();
     private int roomNumber;
     private ArrayList<String> roomArray = new ArrayList<>();
@@ -50,6 +52,9 @@ public class LobbyActivit extends AppCompatActivity{
         mListView = (ListView) findViewById(R.id.lobby_list);
         mTextView = (TextView) findViewById(R.id.lobby_text);
         mImageButton = (ImageButton) findViewById(R.id.lobby_imageButton);
+
+
+        mListView.setScrollContainer(true);
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -78,8 +83,9 @@ public class LobbyActivit extends AppCompatActivity{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 roomNumber = 1;
                 roomArray.clear();
-                String username = dataSnapshot.child("username").getValue(String.class);
+               String username = dataSnapshot.child("username").getValue(String.class);
                 mTextView.setText(username);
+                dataSnapshot = dataSnapshot.child("rooms");
                 showData(dataSnapshot);
             }
 
@@ -92,24 +98,33 @@ public class LobbyActivit extends AppCompatActivity{
         mImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toastMessage("IT WORKT");
+
                 addRoomToUser.addRoom(userID);
             }
         });
+
+
+
+      /*  mListView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toastMessage("It Workt");
+            }
+        });*/
 
     }
 
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds: dataSnapshot.getChildren()){
 
-            if(dataSnapshot.child("rooms").child("room"+roomNumber).getValue()!=null) {
-                String room = dataSnapshot.child("rooms").child("room" + roomNumber).getValue(String.class);
+            if (dataSnapshot.child("room" + roomNumber).getValue()!=null) {
+                String room = dataSnapshot.child("room" + roomNumber).getValue(String.class);
                 roomNumber++;
 
 
                 roomArray.add(room);
 
-                ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, roomArray);
+                ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.lobby_list_items, roomArray);
                 mListView.setAdapter(adapter);
 
             }

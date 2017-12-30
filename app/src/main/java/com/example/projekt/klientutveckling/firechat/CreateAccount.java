@@ -1,5 +1,6 @@
 package com.example.projekt.klientutveckling.firechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,12 +29,15 @@ import java.util.Map;
 public class CreateAccount extends ProgressActivity {
 
     private UserData userData = UserData.getUserData();
+
     private TextView userNameTextView;
     private EditText userNameTextField;
     private Button createDisplayname;
+
     private DatabaseReference mDatabase;
     private String currentUserId;
     private FirebaseAuth mAuth;
+
     private final List<User> userList = new ArrayList<User>();
 
     @Override
@@ -57,42 +61,12 @@ public class CreateAccount extends ProgressActivity {
             {
                 writeToDatabase();
             }
+
+
+
         });
 
-        retrieveUserInfo();
-    }
 
-    private void retrieveUserInfo()
-    {
-        mDatabase.child("users").addChildEventListener(new ChildEventListener()
-        {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s)
-            {
-                User user = dataSnapshot.getValue(User.class);
-                userList.add(user);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s)
-            {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void writeToDatabase()
@@ -103,10 +77,10 @@ public class CreateAccount extends ProgressActivity {
         {
             final String current_user = "users/" + currentUserId + "/";
 
+
             Map userInfoMap = new HashMap();
             userInfoMap.put("username", username);
             userInfoMap.put("email", mAuth.getCurrentUser().getEmail());
-
             Map userMap = new HashMap();
             userMap.put(current_user, userInfoMap);
 
@@ -125,6 +99,8 @@ public class CreateAccount extends ProgressActivity {
             });
 
         }
+        Intent intent = new Intent(CreateAccount.this, LobbyActivit.class);
+        startActivity(intent);
     }
 
 }

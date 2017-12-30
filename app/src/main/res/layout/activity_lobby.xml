@@ -14,12 +14,20 @@
         android:textStyle="italic"
         android:text="" />
 
-    <ListView
-        android:id="@+id/lobby_list"
+    <ScrollView
+        android:id="@+id/lobby_scroll"
         android:layout_width="match_parent"
-        android:layout_height="376dp">
+        android:layout_height="465dp"
+        android:fillViewport="true">
 
-    </ListView>
+        <ListView
+            android:id="@+id/lobby_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </ScrollView>
+
 
     <ImageButton
         android:id="@+id/lobby_imageButton"
