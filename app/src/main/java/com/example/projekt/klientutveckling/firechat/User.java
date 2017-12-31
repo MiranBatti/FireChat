@@ -10,13 +10,13 @@ public class User {
 
     public String username;
     public String email;
-    public Map rooms;
+    public Map<String, String> rooms;
 
     public User(){
 
     }
 
-    public User(String username,String email,Map rooms){
+    public User(String username,String email,Map<String, String> rooms){
         this.username = username;
         this.email = email;
         this.rooms = rooms;
@@ -37,8 +37,14 @@ public class User {
         this.email = email;
     }
 
-    public Map getRooms(){
-        return rooms;
+    public Map<String, String> getRooms(){return rooms;}
+    public void setRooms(Map<String, String> rooms) {this.rooms = rooms;}
+
+    public boolean roomExist()
+    {
+        if(rooms != null)
+            return true;
+        else
+            return false;
     }
-    private void setRooms(Map rooms) {this.rooms = rooms;}
 }

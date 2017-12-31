@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +37,7 @@ import java.util.Map;
  * Created by Miran on 12/12/2017.
  */
 
-public class ChatActivity extends AppCompatActivity
+public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener
 {
     private Toolbar mToolbar;
 
@@ -52,9 +52,7 @@ public class ChatActivity extends AppCompatActivity
     private LinearLayoutManager mLinearLayoutManager;
     private MessageAdapter mMessageAdapter;
     private ImageButton addButton;
-
     private String roomName;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -63,7 +61,7 @@ public class ChatActivity extends AppCompatActivity
         setContentView(R.layout.activity_chat);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         addButton = (ImageButton) findViewById(R.id.addButton);
-        registerForContextMenu(addButton);
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -106,14 +104,30 @@ public class ChatActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
 
+    public void showPopup(View v)
+    {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        popup.setOnMenuItemClickListener(this);
+        inflater.inflate(R.menu.chat_menu_items, popup.getMenu());
+        popup.show();
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chat_menu_items, menu);
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.add_action:
+                Intent intent = new Intent(ChatActivity.this, AddUserActivity.class);
+                intent.putExtra("room", roomName);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -161,11 +175,6 @@ public class ChatActivity extends AppCompatActivity
 
             dbRef.child("latest").child(roomName).child("message").setValue(message);
             dbRef.child("latest").child(roomName).child("time").setValue(ServerValue.TIMESTAMP);
-
-            /*
-            dbRef.child("Rooms").child("Room1").child("timestamp").setValue(ServerValue.TIMESTAMP);
-            dbRef.child("Rooms").child("Room1").child("message").setValue(message);
-            */
 
             dbRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override

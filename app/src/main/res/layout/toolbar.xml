@@ -17,6 +17,8 @@
         android:layout_gravity="end"
         android:background="@color/colorPrimary"
         android:clickable="true"
-        local:srcCompat="@android:drawable/ic_menu_add" />
+        local:srcCompat="@android:drawable/ic_menu_add"
+        android:onClick="showPopup"
+        />
 </android.support.v7.widget.Toolbar>
 

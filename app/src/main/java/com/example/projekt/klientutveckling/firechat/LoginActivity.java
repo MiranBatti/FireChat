@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends ProgressActivity implements View.OnClickListener
 {
@@ -42,6 +43,9 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
         findViewById(R.id.email_create_account_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true); //Must be used before any other use of Firebase
+
 
         mAuth = FirebaseAuth.getInstance();
 
