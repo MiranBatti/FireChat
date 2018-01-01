@@ -31,7 +31,8 @@ public class CreatChatActivity extends AppCompatActivity {
 
     private String usernameId;
     private ArrayList<String> firendsUsernameId = new ArrayList();
-    private int roomNumber = 0;
+    private long roomNumber;
+    private String bigRoomName;
 
     private EditText roomname;
     private EditText firendsUsername;
@@ -50,6 +51,8 @@ public class CreatChatActivity extends AppCompatActivity {
         firendsUsername = (EditText) findViewById(R.id.createchat_firendusername);
         creatChatButton = (Button) findViewById(R.id.createchat_creatchatbutton);
 
+        getRoomName();
+
 
         creatChatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +68,8 @@ public class CreatChatActivity extends AppCompatActivity {
 
     private void creatRoom(){
         {
+            bigRoomName= usernameId+(int)roomNumber;
 
-           String bigRoomName = getRoomName();
             addRoom(usernameId,roomname.getText().toString(),bigRoomName);
             for(String friendid : this.firendsUsernameId){
                 addRoom(friendid,roomname.getText().toString(),bigRoomName);
@@ -116,19 +119,24 @@ public class CreatChatActivity extends AppCompatActivity {
     private void creatRoom(String bigRoomName){
 
         Intent intent = new Intent(CreatChatActivity.this, ChatActivity.class);
+        intent.putExtra("messagesRoomName",bigRoomName);
+        intent.putExtra("roomName",roomname.getText().toString());
         startActivity(intent);
 
     }
 
 
-    private String getRoomName(){
+    private void getRoomName(){
 
         mRef.child("users").child(usernameId).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    roomNumber++;
-                }
+
+                roomNumber=dataSnapshot.getChildrenCount();
+
+                toastMessage("roomNumber :"+roomNumber);
+
+
             }
 
             @Override
@@ -137,8 +145,9 @@ public class CreatChatActivity extends AppCompatActivity {
             }
         });
 
-        return usernameId+roomNumber;
+
     }
+
 
     private void toastMessage(String message){
 

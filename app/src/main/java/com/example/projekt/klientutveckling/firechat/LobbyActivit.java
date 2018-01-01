@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -39,6 +40,7 @@ public class LobbyActivit extends AppCompatActivity{
     private  ListView mListView;
     private TextView mTextView;
     private ImageButton mImageButton;
+    private String oldChatRoomName;
 
 
 
@@ -106,6 +108,34 @@ public class LobbyActivit extends AppCompatActivity{
             }
         });
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openOldChat(roomArray.get(position));
+            }
+        });
+
+    }
+
+    private void openOldChat(String roomName){
+      this.oldChatRoomName = roomName;
+        mRef.child("users").child(userID).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Intent intent = new Intent(LobbyActivit.this, ChatActivity.class);
+                intent.putExtra("messagesRoomName", dataSnapshot.child(oldChatRoomName).getValue().toString());
+                intent.putExtra("roomName", dataSnapshot.child(oldChatRoomName).getKey().toString());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
 
       /*  mListView.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +145,7 @@ public class LobbyActivit extends AppCompatActivity{
             }
         });*/
 
-    }
+
 
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds: dataSnapshot.getChildren()){
