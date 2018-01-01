@@ -65,9 +65,9 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Room Name");
+        getSupportActionBar().setTitle(getIntent().getStringExtra("roomName"));
 
-        roomName = "Room1"; //TODO: room name should be passed from lobby. hard coded, for now
+        roomName = getIntent().getStringExtra("messagesRoomName");
 
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference();
