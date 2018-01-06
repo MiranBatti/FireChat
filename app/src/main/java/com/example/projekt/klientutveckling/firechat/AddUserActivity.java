@@ -31,13 +31,16 @@ import java.util.Map;
 public class AddUserActivity extends AppCompatActivity
 {
     private Toolbar mToolbar;
+
+    private DatabaseReference mDatabase;
+
     private ImageButton addButton;
     private ListView userListView;
-    private DatabaseReference mDatabase;
     private final List<String> usernameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
-    private String room;
-    private String roomTitle;
+
+    private String messagesRoomName;
+    private String roomName;
     private Map<String, String> userIdMap;
 
     @Override
@@ -51,8 +54,8 @@ public class AddUserActivity extends AppCompatActivity
         addButton = (ImageButton) findViewById(R.id.addButton);
         userListView = (ListView) findViewById(R.id.user_list);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        room = getIntent().getStringExtra("messagesRoomName");
-        roomTitle = getIntent().getStringExtra("roomName");
+        messagesRoomName = getIntent().getStringExtra("messagesRoomName");
+        roomName = getIntent().getStringExtra("roomName");
         userIdMap = new HashMap<>();
 
         addButton.setVisibility(View.GONE);
@@ -85,12 +88,17 @@ public class AddUserActivity extends AppCompatActivity
     private void addUserToRoom(String item, int i)
     {
         Map roomMap = new HashMap();
-        roomMap.put(roomTitle,room);
+        roomMap.put(roomName, messagesRoomName);
         mDatabase.child("users").child(item).child("rooms").updateChildren(roomMap);
         usernameList.remove(i);
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Menu to se what you click
+     * @param item
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -120,7 +128,7 @@ public class AddUserActivity extends AppCompatActivity
                 {
                     for (Map.Entry<String, String> entry: user.getRooms().entrySet())
                     {
-                        if(entry.getKey().equals(room))
+                        if(entry.getKey().equals(messagesRoomName))
                         {
                             username = "";
                         }

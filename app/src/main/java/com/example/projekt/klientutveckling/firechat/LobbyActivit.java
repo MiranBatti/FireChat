@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,13 +39,10 @@ public class LobbyActivit extends AppCompatActivity{
     private  ListView mListView;
     private TextView mTextView;
     private ImageButton mImageButton;
+    private TextView mOldchatlobbyTextView;
+
     private String oldChatRoomName;
-
-
-
-    private int roomNumber;
-
-    private ArrayList<String> roomArray = new ArrayList<>();
+    private ArrayList<String> oldChatRoomNameArray = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -55,16 +51,17 @@ public class LobbyActivit extends AppCompatActivity{
 
         mListView = (ListView) findViewById(R.id.lobby_list);
         mTextView = (TextView) findViewById(R.id.lobby_text);
+        mOldchatlobbyTextView = (TextView) findViewById(R.id.oldchatlobby_text);
         mImageButton = (ImageButton) findViewById(R.id.lobby_imageButton);
-
-
         mListView.setScrollContainer(true);
+
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
+        mOldchatlobbyTextView.setText("Old Chats");
 
         mAuthListner = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -72,7 +69,7 @@ public class LobbyActivit extends AppCompatActivity{
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
                     Log.d(TAG,"onAuthStateChanged:signed_in: " + user.getUid());
-                    toastMessage("Successfully signed in eith: "+user.getEmail());
+                    toastMessage("Successfully signed in with: "+user.getEmail());
                 }
                 else {
                     Log.d(TAG,"onAuthStateChanged:signed_out");
@@ -85,8 +82,8 @@ public class LobbyActivit extends AppCompatActivity{
         mRef.child("users").child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                roomNumber = 1;
-                roomArray.clear();
+
+                oldChatRoomNameArray.clear();
                String username = dataSnapshot.child("username").getValue(String.class);
                 mTextView.setText(username);
                 dataSnapshot = dataSnapshot.child("rooms");
@@ -111,7 +108,7 @@ public class LobbyActivit extends AppCompatActivity{
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openOldChat(roomArray.get(position));
+                openOldChat(oldChatRoomNameArray.get(position));
             }
         });
 
@@ -138,13 +135,6 @@ public class LobbyActivit extends AppCompatActivity{
     }
 
 
-      /*  mListView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toastMessage("It Workt");
-            }
-        });*/
-
 
 
     private void showData(DataSnapshot dataSnapshot) {
@@ -152,12 +142,12 @@ public class LobbyActivit extends AppCompatActivity{
 
 
                 String room = ds.getKey().toString();
-                roomNumber++;
 
 
-                roomArray.add(room);
 
-                ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.lobby_list_items, roomArray);
+                oldChatRoomNameArray.add(room);
+
+                ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.lobby_list_items, oldChatRoomNameArray);
                 mListView.setAdapter(adapter);
 
 

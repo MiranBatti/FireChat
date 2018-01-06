@@ -1,6 +1,5 @@
 package com.example.projekt.klientutveckling.firechat;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -26,7 +23,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,18 +38,19 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private Toolbar mToolbar;
 
     private FirebaseAuth mAuth;
-    private String currentUserID;
-    private EditText mChatMessageView;
-    private String mChatUser;
-    private DatabaseReference dbRef;
-    private ImageButton mSendBtn;
+    private DatabaseReference mDatabase;
+
     private RecyclerView mMessageList;
     private final List<Message> messageList = new ArrayList<>();
     private LinearLayoutManager mLinearLayoutManager;
     private MessageAdapter mMessageAdapter;
-    private ImageButton addButton;
+
+    private String currentUserID;
+    private EditText mChatMessageView;
+    private String mChatUser;
+
+    private String messagesRoomName;
     private String roomName;
-    private String roomTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -61,23 +58,23 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        addButton = (ImageButton) findViewById(R.id.addButton);
 
-        roomTitle = getIntent().getStringExtra("roomName");
+
+        roomName = getIntent().getStringExtra("roomName");
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(roomTitle);
+        getSupportActionBar().setTitle(roomName);
 
-        roomName = getIntent().getStringExtra("messagesRoomName");
+        messagesRoomName = getIntent().getStringExtra("messagesRoomName");
 
         mAuth = FirebaseAuth.getInstance();
-        dbRef = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         currentUserID = mAuth.getCurrentUser().getUid();
 
         mChatUser = getIntent().getStringExtra("user_id"); //todo: is null because there's no putExtra() anywhere
-        //mSendBtn = (ImageButton) findViewById(R.id.chat_send_btn);
+
         mChatMessageView = (EditText) findViewById(R.id.chat_message_view);
         mMessageList = (RecyclerView) findViewById(R.id.conv_list);
 
@@ -109,6 +106,11 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         });
     }
 
+    /**
+     * ShowPopup
+     *  Inflate menu items
+     * @param v
+     */
     public void showPopup(View v)
     {
         PopupMenu popup = new PopupMenu(this, v);
@@ -118,14 +120,19 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         popup.show();
     }
 
+    /**
+     * What option you chose
+     * @param item
+     * @return boolean
+     */
     @Override
     public boolean onMenuItemClick(MenuItem item)
     {
         switch (item.getItemId()) {
             case R.id.add_action:
                 Intent intent = new Intent(ChatActivity.this, AddUserActivity.class);
-                intent.putExtra("messagesRoomName", roomName);
-                intent.putExtra("roomName",roomTitle);
+                intent.putExtra("messagesRoomName", messagesRoomName);
+                intent.putExtra("roomName", roomName);
                 startActivity(intent);
                 finish();
                 return true;
@@ -134,6 +141,11 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    /**
+     * To get back to Lobbyn
+     * @param item
+     * @return boolena
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -159,10 +171,10 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             final String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
 
             final String current_user = "NewRooms/" + "NewRoom/" + currentUserID;
-            final String current_room = "messages/" + roomName + "/";
+            final String current_room = "messages/" + messagesRoomName + "/";
 
 
-            DatabaseReference user_message_push = dbRef.child("messages").child(roomName).push();
+            DatabaseReference user_message_push = mDatabase.child("messages").child(messagesRoomName).push();
 
             String push_id = user_message_push.getKey();
 
@@ -177,10 +189,10 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
             mChatMessageView.setText("");
 
-            dbRef.child("latest").child(roomName).child("message").setValue(message);
-            dbRef.child("latest").child(roomName).child("time").setValue(ServerValue.TIMESTAMP);
+            mDatabase.child("latest").child(messagesRoomName).child("message").setValue(message);
+            mDatabase.child("latest").child(messagesRoomName).child("time").setValue(ServerValue.TIMESTAMP);
 
-            dbRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+            mDatabase.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
@@ -198,7 +210,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void retrieveMessages()
     {
-        dbRef.child("messages").child(roomName).addChildEventListener(new ChildEventListener()
+        mDatabase.child("messages").child(messagesRoomName).addChildEventListener(new ChildEventListener()
         {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s)

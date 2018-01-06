@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class CreateAccount extends ProgressActivity {
 
-    private UserData userData = UserData.getUserData();
+
     private TextView userNameTextView;
     private EditText userNameTextField;
     private Button createDisplayname;
