@@ -38,6 +38,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         previousSender = "";
     }
 
+    /**
+     * Handles how messages are viewed. Messages by the sender(first if statement) are in a white bubble to the right. Other users to the left in purple.
+     *
+     * @param viewHolder
+     * @param i
+     */
     @Override
     public void onBindViewHolder(final MessageViewHolder viewHolder, int i)
     {

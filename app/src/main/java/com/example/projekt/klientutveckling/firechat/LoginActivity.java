@@ -46,9 +46,15 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true); //Must be used before any other use of Firebase
 
-
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentuser = mAuth.getCurrentUser();
 
+        if(currentuser != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, LobbyActivit.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 

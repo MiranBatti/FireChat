@@ -10,6 +10,13 @@ public class Message
     private long time;
     private String from;
 
+    /**
+     * Model for messages. "Seen" feature not implemented.
+     *
+     * @param message
+     * @param time
+     * @param from
+     */
     public Message(String message, long time, String from)
     {
         this.message = message;
@@ -17,6 +24,9 @@ public class Message
         this.from = from;
     }
 
+    /**
+     * empty constructor required by firebase
+     */
     public Message(){}
 
     public String getMessage() {return message;}

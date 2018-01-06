@@ -57,17 +57,15 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        messagesRoomName = getIntent().getStringExtra("messagesRoomName");
+        roomName = messagesRoomName;
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-
-        roomName = getIntent().getStringExtra("roomName");
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(roomName);
-
-        messagesRoomName = getIntent().getStringExtra("messagesRoomName");
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -107,8 +105,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     /**
-     * ShowPopup
-     *  Inflate menu items
+     * Inflate PopupMenu items
      * @param v
      */
     public void showPopup(View v)
@@ -121,9 +118,9 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     /**
-     * What option you chose
+     * Handles clicks on chat_menu_items
      * @param item
-     * @return boolean
+     * @return
      */
     @Override
     public boolean onMenuItemClick(MenuItem item)
@@ -142,9 +139,9 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     /**
-     * To get back to Lobbyn
+     * Handles toolbar items. Adds back button that returns back to LobbyActivity
      * @param item
-     * @return boolena
+     * @return boolean
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -161,18 +158,22 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         }
     }
 
+    /**
+     * Sends the text written in Textfield to database.
+     * Database structure: message->
+     *                              current_roomID + pushID ->
+     *                                      message: string
+     *                                      seen:    boolean
+     *                                      time:    long
+     *                                      from:    string
+     */
     private void sendMessage()
     {
         final String message = mChatMessageView.getText().toString();
 
         if(!TextUtils.isEmpty(message)){
 
-            final String current_user_ref = "messages/" + currentUserID + "/" + mChatUser;
-            final String chat_user_ref = "messages/" + mChatUser + "/" + current_user_ref;
-
-            final String current_user = "NewRooms/" + "NewRoom/" + currentUserID;
-            final String current_room = "messages/" + messagesRoomName + "/";
-
+            final String current_room = "messages/" + messagesRoomName + "/"; //we're saying that current_room will be in the "messages" table
 
             DatabaseReference user_message_push = mDatabase.child("messages").child(messagesRoomName).push();
 

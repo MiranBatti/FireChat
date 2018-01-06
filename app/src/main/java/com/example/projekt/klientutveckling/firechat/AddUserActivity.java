@@ -85,6 +85,11 @@ public class AddUserActivity extends AppCompatActivity
 
     }
 
+    /**
+     * Adds user to the room by pushing the room name to the user in the database
+     * @param item
+     * @param i
+     */
     private void addUserToRoom(String item, int i)
     {
         Map roomMap = new HashMap();
@@ -105,6 +110,7 @@ public class AddUserActivity extends AppCompatActivity
             case android.R.id.home:
                 Intent intent = new Intent(AddUserActivity.this, ChatActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("messagesRoomName", messagesRoomName);
                 startActivity(intent);
                 finish();
                 return true;
@@ -114,6 +120,9 @@ public class AddUserActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Populate ListView with users. Excludes users that are already in the Room.
+     */
     private void retrieveUserInfo()
     {
         mDatabase.child("users").addChildEventListener(new ChildEventListener()

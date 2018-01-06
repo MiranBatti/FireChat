@@ -12,10 +12,18 @@ public class User {
     public String email;
     public Map<String, String> rooms;
 
-    public User(){
+    /**
+     * Empty constructor required by firebase
+     */
+    public User(){}
 
-    }
-
+    /**
+     * Model for users.
+     *
+     * @param username
+     * @param email
+     * @param rooms
+     */
     public User(String username,String email,Map<String, String> rooms){
         this.username = username;
         this.email = email;
@@ -40,6 +48,10 @@ public class User {
     public Map<String, String> getRooms(){return rooms;}
     public void setRooms(Map<String, String> rooms) {this.rooms = rooms;}
 
+    /**
+     * Checks if rooms map is null or not. Failsafe in case all maps in users need to be iterated.
+     * @return boolean
+     */
     public boolean roomExist()
     {
         if(rooms != null)
