@@ -49,14 +49,7 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
 
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser currentuser = mAuth.getCurrentUser();
 
-        if(currentuser != null)
-        {
-            Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     @Override

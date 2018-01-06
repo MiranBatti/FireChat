@@ -37,6 +37,7 @@ public class AddUserActivity extends AppCompatActivity
     private final List<String> usernameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private String room;
+    private String roomTitle;
     private Map<String, String> userIdMap;
 
     @Override
@@ -50,7 +51,8 @@ public class AddUserActivity extends AppCompatActivity
         addButton = (ImageButton) findViewById(R.id.addButton);
         userListView = (ListView) findViewById(R.id.user_list);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        room = getIntent().getStringExtra("room");
+        room = getIntent().getStringExtra("messagesRoomName");
+        roomTitle = getIntent().getStringExtra("roomName");
         userIdMap = new HashMap<>();
 
         addButton.setVisibility(View.GONE);
@@ -83,7 +85,7 @@ public class AddUserActivity extends AppCompatActivity
     private void addUserToRoom(String item, int i)
     {
         Map roomMap = new HashMap();
-        roomMap.put(room,"test");
+        roomMap.put(roomTitle,room);
         mDatabase.child("users").child(item).child("rooms").updateChildren(roomMap);
         usernameList.remove(i);
         adapter.notifyDataSetChanged();

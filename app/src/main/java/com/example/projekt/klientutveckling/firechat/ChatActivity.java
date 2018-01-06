@@ -53,6 +53,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private MessageAdapter mMessageAdapter;
     private ImageButton addButton;
     private String roomName;
+    private String roomTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -62,10 +63,12 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         addButton = (ImageButton) findViewById(R.id.addButton);
 
+        roomTitle = getIntent().getStringExtra("roomName");
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(getIntent().getStringExtra("roomName"));
+        getSupportActionBar().setTitle(roomTitle);
 
         roomName = getIntent().getStringExtra("messagesRoomName");
 
@@ -121,7 +124,8 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         switch (item.getItemId()) {
             case R.id.add_action:
                 Intent intent = new Intent(ChatActivity.this, AddUserActivity.class);
-                intent.putExtra("room", roomName);
+                intent.putExtra("messagesRoomName", roomName);
+                intent.putExtra("roomName",roomTitle);
                 startActivity(intent);
                 finish();
                 return true;
