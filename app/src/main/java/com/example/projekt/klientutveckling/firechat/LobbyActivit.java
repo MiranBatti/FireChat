@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +31,7 @@ import java.util.ArrayList;
  * Created by ofk14den on 2017-12-18.
  */
 
-public class LobbyActivit extends AppCompatActivity{
+public class LobbyActivit extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "UserInformation";
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -44,10 +48,15 @@ public class LobbyActivit extends AppCompatActivity{
     private String oldChatRoomName;
     private ArrayList<String> oldChatRoomNameArray = new ArrayList<>();
 
+    private Toolbar mToolbar;
+
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("Firebase");
 
         mListView = (ListView) findViewById(R.id.lobby_list);
         mTextView = (TextView) findViewById(R.id.lobby_text);
@@ -135,7 +144,29 @@ public class LobbyActivit extends AppCompatActivity{
     }
 
 
+    public void showPopup(View v)
+    {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        popup.setOnMenuItemClickListener(this);
+        inflater.inflate(R.menu.lobby_menu_items, popup.getMenu());
+        popup.show();
+    }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        switch (item.getItemId()) {
+            case R.id.sign_out_action:
+                mAuth.signOut();
+                Intent intent = new Intent(LobbyActivit.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return false;
+        }
+    }
 
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot ds: dataSnapshot.getChildren()){

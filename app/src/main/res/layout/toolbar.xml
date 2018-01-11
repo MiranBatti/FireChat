@@ -20,5 +20,6 @@
         local:srcCompat="@android:drawable/ic_menu_add"
         android:onClick="showPopup"
         />
+
 </android.support.v7.widget.Toolbar>
 

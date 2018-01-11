@@ -27,8 +27,8 @@
         <activity android:name=".CreateAccount">
 
         </activity>
-        <activity android:name=".LobbyActivit">
-
+        <activity android:name=".LobbyActivit"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
         </activity>
         <activity android:name=".CreatChatActivity">
 
