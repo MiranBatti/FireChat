@@ -22,7 +22,7 @@
         android:drawablePadding="20dp"
         android:drawableRight="@drawable/send_arrow_layer"
         android:ems="10"
-        android:hint="Send a message"
+        android:hint="@string/send_a_message"
         android:inputType="textPersonName"
         android:paddingBottom="8dp"
         android:paddingLeft="10dp"

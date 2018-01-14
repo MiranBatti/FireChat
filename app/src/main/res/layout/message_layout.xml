@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -57,4 +58,17 @@
         android:layout_marginBottom="5dp"
         android:textColor="@color/black"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/message_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/chatTextView"
+        android:layout_below="@+id/chatTextView"
+        android:layout_marginStart="0dp"
+        android:layout_toEndOf="@+id/profileImageView"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@color/grey_300" />
 </RelativeLayout>

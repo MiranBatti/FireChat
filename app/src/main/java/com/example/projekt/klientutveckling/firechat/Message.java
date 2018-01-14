@@ -9,6 +9,7 @@ public class Message
     private String message;
     private long time;
     private String from;
+    private String type;
 
     /**
      * Model for messages. "Seen" feature not implemented.
@@ -17,11 +18,12 @@ public class Message
      * @param time
      * @param from
      */
-    public Message(String message, long time, String from)
+    public Message(String message, long time, String from, String type)
     {
         this.message = message;
         this.time = time;
         this.from = from;
+        this.type = type;
     }
 
     /**
@@ -43,4 +45,7 @@ public class Message
 
     public String getFrom() {return from;}
     public void setFrom(String from) {this.from = from;}
+
+    public String getType() {return type;}
+    public void setType(String type) {this.type = type;}
 }

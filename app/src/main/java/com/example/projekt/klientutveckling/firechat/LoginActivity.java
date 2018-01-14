@@ -44,8 +44,6 @@ public class LoginActivity extends ProgressActivity implements View.OnClickListe
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true); //Must be used before any other use of Firebase
-
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentuser = mAuth.getCurrentUser();
 

@@ -1,7 +1,9 @@
 package com.example.projekt.klientutveckling.firechat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +16,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +47,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private StorageReference mImageStorage;
 
     private RecyclerView mMessageList;
     private final List<Message> messageList = new ArrayList<>();
@@ -49,8 +58,12 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private EditText mChatMessageView;
     private String mChatUser;
 
+    private ImageButton mSendImageButton;
+
     private String messagesRoomName;
     private String roomName;
+
+    private final int PICK_IMAGE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -69,12 +82,14 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mImageStorage = FirebaseStorage.getInstance().getReference();
         currentUserID = mAuth.getCurrentUser().getUid();
 
         mChatUser = getIntent().getStringExtra("user_id"); //todo: is null because there's no putExtra() anywhere
 
         mChatMessageView = (EditText) findViewById(R.id.chat_message_view);
         mMessageList = (RecyclerView) findViewById(R.id.conv_list);
+        mSendImageButton = (ImageButton) findViewById(R.id.send_image_button);
 
         mMessageAdapter = new MessageAdapter(messageList);
 
@@ -87,6 +102,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); //pushar up layouten så att keyboard inte blockerar meddelanden
 
+        //Eftersom "send message" knappen ligger i själva EditText så måste vi hämta den som "drawable right" för att kunna känna av att knappen har klickats.
         mChatMessageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -100,6 +116,19 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     }
                 }
                 return false;
+            }
+        });
+
+        mSendImageButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE);
             }
         });
     }
@@ -184,6 +213,7 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             messageMap.put("seen", false);
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", currentUserID);
+            messageMap.put("type", "text");
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(current_room + push_id, messageMap);
@@ -242,5 +272,68 @@ public class ChatActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PICK_IMAGE && resultCode == RESULT_OK){
+
+            Uri imageUri = data.getData();
+
+            final String current_room = "messages/" + messagesRoomName + "/"; //we're saying that current_room will be in the "messages" table
+
+            DatabaseReference user_message_push = mDatabase.child("messages").child(messagesRoomName).push();
+
+            final String push_id = user_message_push.getKey();
+
+            StorageReference filepath = mImageStorage.child("message_images").child( push_id + ".jpg");
+
+            filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                    if(task.isSuccessful()){
+
+                        String image_url = task.getResult().getDownloadUrl().toString();
+
+
+                        Map messageMap = new HashMap();
+                        messageMap.put("message", image_url);
+                        messageMap.put("seen", false);
+                        messageMap.put("time", ServerValue.TIMESTAMP);
+                        messageMap.put("from", currentUserID);
+                        messageMap.put("type", "image");
+
+                        Map messageUserMap = new HashMap();
+                        messageUserMap.put(current_room + push_id, messageMap);
+
+
+                        mDatabase.child("latest").child(messagesRoomName).child("message").setValue(image_url);
+                        mDatabase.child("latest").child(messagesRoomName).child("time").setValue(ServerValue.TIMESTAMP);
+
+                        mDatabase.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                                if(databaseError != null){
+
+                                    Log.d("CHAT_LOG", databaseError.getMessage().toString());
+                                }
+
+                            }
+                        });
+
+
+                    }
+
+                }
+            });
+
+        }
+
+
     }
 }

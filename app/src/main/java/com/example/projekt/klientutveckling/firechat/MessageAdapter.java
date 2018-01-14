@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -51,6 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         String currentUser = mAuth.getCurrentUser().getUid();
         String messageSender = messages.getFrom();
+        String messageType = messages.getType();
 
         if(messageSender.equals(currentUser)) //if we sent the message
         {
@@ -60,6 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             viewHolder.messageView.setBottom(12);
             viewHolder.profileImageView.setVisibility(View.GONE);
             viewHolder.userInfo.setVisibility(View.GONE);
+            viewHolder.messageImage.setVisibility(View.GONE);
         } else //if someone else sent the message
         {
             viewHolder.messageView.setText(messages.getMessage());
@@ -67,6 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             viewHolder.messageViewFrom.setVisibility(View.GONE);
             viewHolder.messageView.setBottom(4);
             viewHolder.profileImageView.setVisibility(View.VISIBLE);
+            viewHolder.messageImage.setVisibility(View.GONE);
 
             if(!messageSender.equals(previousSender) && !previousSender.equals("")) {
                 viewHolder.userInfo.setVisibility(View.VISIBLE);
@@ -84,6 +89,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
             }
         }
+
+        if(messageType != null && messageType.equals("image"))
+        {
+            viewHolder.messageImage.setVisibility(View.GONE);
+            viewHolder.messageViewFrom.setVisibility(View.GONE);
+            viewHolder.messageImage.setVisibility(View.VISIBLE);
+
+            Picasso.with(viewHolder.profileImageView.getContext()).load(messages.getMessage()).placeholder(R.drawable.default_avatar).into(viewHolder.messageImage);
+        }
+
         previousSender = messageSender;
     }
 
@@ -107,6 +122,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public TextView messageViewFrom;
         public CircleImageView profileImageView;
         public TextView userInfo;
+        public ImageView messageImage;
 
         public MessageViewHolder(View itemView)
         {
@@ -116,6 +132,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageViewFrom = (TextView) itemView.findViewById(R.id.chatTextFromView);
             profileImageView = (CircleImageView) itemView.findViewById(R.id.profileImageView);
             userInfo = (TextView) itemView.findViewById(R.id.userInfoBar);
+            messageImage = (ImageView) itemView.findViewById(R.id.message_image);
         }
     }
 }

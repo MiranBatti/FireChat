@@ -14,5 +14,6 @@
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="new_user">Username</string>
+    <string name="send_a_message">Send a message</string>
 
 </resources>
